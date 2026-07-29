@@ -1,20 +1,20 @@
 import 'dotenv/config';
 
-function required(name: string): string {
+function optional(name: string, fallback: string): string {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`Variável de ambiente obrigatória ausente: ${name}`);
+    return fallback;
   }
   return value;
 }
 
 export const env = {
   port: Number(process.env.PORT ?? 3333),
-  jwtSecret: required('JWT_SECRET'),
+  jwtSecret: optional('JWT_SECRET', 'dev-secret'),
   frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:5173',
   github: {
-    clientId: required('GITHUB_CLIENT_ID'),
-    clientSecret: required('GITHUB_CLIENT_SECRET'),
-    callbackUrl: required('GITHUB_CALLBACK_URL'),
+    clientId: optional('GITHUB_CLIENT_ID', ''),
+    clientSecret: optional('GITHUB_CLIENT_SECRET', ''),
+    callbackUrl: optional('GITHUB_CALLBACK_URL', 'http://localhost:3333/auth/github/callback'),
   },
 };
